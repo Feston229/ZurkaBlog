@@ -1,0 +1,133 @@
+---
+title: 'How to run LLMs locally ?'
+date: '2024-05-29'
+tags: ['self-host', 'LLM']
+draft: false
+summary: 'Discover how to run large language models locally, on our own hardware.'
+---
+Large language models like ChatGPT or Gemini simplifies our tasks drastically, but they ran by big techs, and don't allows us to perform our computations locally.
+Thankfully small teams (and some companies as well) brings us open models with open weights, that we can run on our hardware.
+The easiest way to get started is to serve models via [ollama](https://ollama.com)
+
+# Installation
+
+If you're not using Arch Linux, then you need to have docker, as well as the appropriate drivers for you GPU installed.
+
+## Nvidia
+
+**Deb based distros:**
+
+1 Add repository
+```bash
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey \
+    | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list \
+    | sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' \
+    | sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+sudo apt-get update
+```
+2 Install the container toolkit
+```bash
+sudo apt-get install -y nvidia-container-toolkit
+```
+
+**RPM based distros:**
+
+1 Add repository
+```bash
+curl -s -L https://nvidia.github.io/libnvidia-container/stable/rpm/nvidia-container-toolkit.repo \
+    | sudo tee /etc/yum.repos.d/nvidia-container-toolkit.repo
+```
+2 Install the container toolkit
+```bash
+sudo yum install -y nvidia-container-toolkit
+```
+
+Configure docker to use the GPU
+```bash
+sudo nvidia-ctk runtime configure --runtime=docker
+sudo systemctl restart docker
+```
+
+Running container
+```bash
+docker run -d --gpus=all -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
+```
+
+## AMD
+
+Here we will need to pull image with tag *rocm*
+```bash
+docker run -d --device /dev/kfd --device /dev/dri -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama:rocm
+```
+
+# Running
+
+To start chat, execute the following command
+```bash
+docker exec -it ollama ollama run llama3
+```
+
+## docker compose
+
+To use ollama as part of multicontainered application (or just for convenience), we can use docker-compose.yml file
+```yml
+services:
+    ollama:
+        container_name: ollama
+        image: ollama/ollama:latest # or rocm
+        volumes:
+            - ollama:/root/.ollama
+        ports:
+            - 11434:11434
+        networks:
+            - app_network
+
+networks:
+  app_network:
+    driver: bridge
+    
+volumes:
+  ollama:
+```
+ollama volume will persist data between containers.
+
+# Arch linux
+
+## Nvidia
+Ensure that cuda toolkit is installed
+```bash
+sudo pacman -Syu cuda --needed
+```
+Next install ollama-cuda package
+```bash
+sudo pacman -S ollama-cuda
+```
+## AMD
+Ensure that rocm libraries are in place
+```bash
+paru rocm-opencl-runtime rocm-smi
+```
+Next install ollama-rocm package
+```bash
+sudo pacman -S ollama-rocm
+```
+
+# Running
+
+To start a chat, execute the following command
+```bash
+ollama run llama3
+```
+
+# Additional notes
+
+1. We can check available models at [ollama library](https://ollama.com/library)
+2. We can access API at http://localhost:11434
+
+# Summary
+
+Today we covered how to use ollama, a tool for running large language models.
+We explored different ways to run ollama, including using docker, docker-compose, and different architectures.
+We also learned how to access ollama's API and explore available models.
+

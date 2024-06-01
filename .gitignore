@@ -28,8 +28,8 @@ public/sitemap.xml
 # search
 /public/search.json
 
-# misc
-.DS_Store
+# vs code
+/.vs_code
 
 # debug
 *.log

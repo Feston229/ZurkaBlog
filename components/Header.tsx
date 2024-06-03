@@ -7,7 +7,7 @@ import ThemeSwitch from './ThemeSwitch'
 import SearchButton from './SearchButton'
 
 /*
-21 - 22
+20 - 21
   <div className="mr-3">
     <Logo />
   </div>

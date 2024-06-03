@@ -1,4 +1,6 @@
 {
   "self-host": 1,
-  "llm": 1
+  "llm": 1,
+  "vim": 1,
+  "text-editor": 1
 }

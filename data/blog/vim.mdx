@@ -1,0 +1,102 @@
+---
+title: 'Vim - Navigation Philosophy'
+date: '2024-06-3'
+tags: ['vim', 'text-editor']
+draft: false
+summary: 'Discover what is vim, and what is the purpose of it.'
+---
+
+Most of the people heard about Vim as editor for geeks, and I want to reveal why its actually much simpler, than it seems, why so many people use editor that was made in 70s, and why its not just an text editor, but much more.
+
+## Definition
+
+Let me quickly kick it off:
+Vim, short for "VI iMproved," is a highly configurable text editor built
+to enable efficient text editing. It's an enhanced version of the vi
+editor, which was created by Bill Joy in 1978 for the Unix operating
+system. Vim was released by Bram Moolenaar in 1991, and it brought many improvements and added functionalities to vi.
+
+## Design
+
+Designed for efficiency and speed, Vim has several modes:
+
+1. **Normal mode** - for navigation
+2. **Insert mode** - for inserting text
+3. **Visual mode** - for selecting text
+4. **Command mode** - for executing commands
+
+## Navigation
+
+**Basic navigation** is done via:
+**h, j, k, l** to move left, down, up, and right respectively.
+
+**Word and line navigation** is done via:
+
+1. **w**: Move forward to the start of the next word.
+2. **b**: Move backward to the start of the previous word.
+3. **e**: Move to the end of the current word.
+4. **0**: Move to the beginning of the line.
+5. **^**: Move to the first non-blank character of the line.
+6. **$**: Move to the end of the line.
+
+Beside those keys, you can also move across the screen with **Ctrl + u/d/b/f**, navigate to the end of file with **G**, or beginning of the file with **g**, as well as search for patter with **/pattern**, or search backwards with **?pattern**
+
+I hope you get the basic idea, and instead of teaching how to use vim here, I want to encourage you to try it yourself.
+
+## Installation
+
+Vim does not come preinstalled on a lot of GNU/Linux distributions (which is quite weird to me), and to install it we can use the following commands:
+
+_DEB based distributions_:
+
+```bash
+sudo apt install vim
+```
+
+_RPM based distributions_:
+
+```bash
+sudo dnf install vim
+```
+
+_Arch Linux_:
+
+```bash
+sudo pacman -S vim
+```
+
+If your distribution is none of these, most likely you can install vim with the same name above.
+
+## Inference
+
+To get started I will recommend running command
+
+```bash
+vimtutor
+```
+which typically comes with vim package.
+It will take roughly 30 minutes to get yourself familiar with the editor.
+Otherwise if you would prefer more interactive variant, I can suggest trying games like:
+1. [vim-adventures](https://vim-adventures.com)
+2. [vim-hero](https://www.vim-hero.com)
+
+## Moving on
+
+But Vim itself is only a tip of an iceberg, based on that magnificent editor, people are building software that makes it familiar to navigate with the same efficiency.
+Let me give you some examples:
+1. [ranger](https://github.com/ranger/ranger) - cli file manager with vim navigation shortcuts
+2. [sway](https://swaywm.org) - not exactly vim inspired, but efficient window manager, that allow us navigate through our desktop with keyboard
+3. [vimium-c](https://github.com/gdh1997/vimium-c) - browser extension for keyboard-based navigation and tab operations
+
+## Additional notes
+
+Vim itself can be extended with plugins, there is huge library of plugins, build by community for community.
+1. [VimAwesome](https://vimawesome.com) - convenient website for searching for vim plugins
+2. [Vim-Plug](https://github.com/junegunn/vim-plug) - plugin manager for vim that I personally use
+2. [Neovim](https://neovim.io) - modern, vim based editor (console IDE I would say)
+
+## Summary
+
+Today we covered Vim not only as text editor, but also as effective tool for navigation across programs.
+Getting it handy will benefit programmer (or anybody else who edit texts) with more efficient workflow.
+Beside that it also inculcate blind typing, which is essential for 21 century.

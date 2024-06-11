@@ -1,0 +1,96 @@
+---
+title: 'What is Context Length in LLMs ?'
+date: '2024-06-4'
+tags: ['llm', 'architecture']
+draft: false
+summary: 'Discover what is context length in LLMs, and does it affect user experience'
+---
+
+# General Definition
+**Context Length** in Large Language Models (LLMs) refers to the number of input tokens or characters the model can handle at once. Simply put, it's the maximum amount of text the model can consider when generating responses (aka dynamic memory).
+
+A token can be a word, part of a word, or a punctuation mark. If your input has more than n tokens, the model will only process up to its limit, which can affect how well it understands and responds to your input.
+
+To calculate rough estimates of context length, you can use this simple formula: `n / 4`, where n is the total number of characters in your text. For example, if you have 1000 characters, the approximate number of tokens would be 1000 / 4 = 250.
+Exact context length will vary based on the model and its specific implementation, as well as complexity of the input data.
+
+*Example chat*:
+### prompt:
+    ```plaintext
+    Summarize the following text:
+    Long mode is the architecture's intended primary mode of operation; it is a combination of the processor's native 64-bit mode and a combined 32-bit and 16-bit compatibility mode. It is used by 64-bit operating systems. Under a 64-bit operating system, 64-bit programs run under 64-bit mode, and 32-bit and 16-bit protected mode applications (that do not need to use either real mode or virtual 8086 mode in order to execute at any time) run under compatibility mode. Real-mode programs and programs that use virtual 8086 mode at any time cannot be run in long mode unless those modes are emulated in software. However, such programs may be started from an operating system running in long mode on processors supporting VT-x or AMD-V by creating a virtual processor running in the desired mode.
+    Since the basic instruction set is the same, there is almost no performance penalty for executing protected mode x86 code. This is unlike Intel's IA-64, where differences in the underlying instruction set mean that running 32-bit code must be done either in emulation of x86 (making the process slower) or with a dedicated x86 coprocessor. However, on the x86-64 platform, many x86 applications could benefit from a 64-bit recompile, due to the additional registers in 64-bit code and guaranteed SSE2-based FPU support, which a compiler can use for optimization. However, applications that regularly handle integers wider than 32 bits, such as cryptographic algorithms, will need a rewrite of the code handling the huge integers in order to take advantage of the 64-bit registers. 
+    ```
+### response:
+    ```plaintext
+    Long mode is the primary mode of operation for 64-bit processors, combining native 64-bit mode with 32-bit and 16-bit compatibility modes. Under a 64-bit operating system, 64-bit programs run in 64-bit mode, while 32-bit and 16-bit protected mode applications run in compatibility mode. Programs requiring real mode or virtual 8086 mode must be emulated in software to run in long mode. On processors with VT-x or AMD-V, virtual processors can be created to run these programs.
+
+    Executing protected mode x86 code in long mode incurs almost no performance penalty, unlike Intel's IA-64, which suffers from slower emulation or requires a dedicated x86 coprocessor. Many x86 applications can benefit from a 64-bit recompile due to additional registers and SSE2-based FPU support for optimization. However, applications dealing with integers wider than 32 bits, like cryptographic algorithms, need code rewrites to utilize 64-bit registers effectively.
+    ```
+
+In that chat example, we have around 2500 (including both user requests and model responses) characters, so the context length will be around 625 tokens.
+
+All following requests will be added to the conversation history and used as a context for generating responses, and if the conversation is too long (exceeding the maximum context length), older messages will be ignored by the model.
+
+# Comparison
+
+Here is quick overview of context length in different LLMs:
+| Model | Context Length | Encoding Method |
+| -------- | -------- | -------- |
+| gpt-3.5-turbo |  16,385 | Positional encoding |
+| gpt-4o | 128,000 | Positional encoding |
+| Llama3 | 8,000 | Rotary positional encoding (RoPE) |
+| Gemini | 128,000 | Positional encoding |
+| Phi3 | 4,000 or 128,000 | Positional encoding |
+
+# Encoding
+The formula n / 4 is not suitable for all models because each model uses a different encoding method. Encoding in language models involves transforming input text into numerical representations that the model can process. These encoding methods vary across different language models (LLMs) and are influenced by the specific architecture and design goals of each model.
+
+**Transformers with Positional Encoding**: Standard transformer models use positional encodings to provide the model with information about the position of each token in the sequence, essential for capturing the order of words.
+
+**Rotary Positional Encoding (RoPE)**: A variant of positional encoding used in models like Llama3, which involves rotating the embedding space. This method is designed to improve the model's ability to capture relative position information more effectively over longer contexts.
+
+Which means, that even if Llama3 has the smallest context length, it may be able to perform better on conversations with larger context length
+without loosing meaning of the conversation.
+
+# What's the problem ?
+Extending context length is not an easy task for LLMs. It requires significant computational resources and can lead to performance degradation or even model collapse. 
+For instance, extending the context length can brought the following hurdles:
+
+1. Computational Resource Demands.
+
+    Extending the context length requires significantly more computational power.
+
+    **Increased Model Size**: Larger models with more parameters are needed to process longer texts, leading to greater demand for memory and processing power.
+
+    **Training Time**: Training these larger models takes much longer, requiring extensive computational resources and energy.
+
+    **Inference Costs**: Running these models in real-time applications can be expensive and slow, especially when handling large-scale interactions.
+
+2. Memory Management
+
+    Handling longer contexts effectively means managing a lot more data. This poses several challenges:
+
+    **Efficient Storage**: The model must store and access vast amounts of information without running into memory limitations.
+
+    **Relevant Information Filtering**: Not all parts of the input text are equally important. The model needs sophisticated mechanisms to prioritize and focus on the most relevant information while discarding less critical data.
+
+# Conclusion
+Understanding the concept of context length in Large Language Models (LLMs) is crucial 
+for appreciating how these models process and generate human-like text. Context length,
+or the number of input tokens a model can handle at once, directly impacts the quality and coherence of the responses,
+especially in extended interactions.
+
+While advancements in AI technology have enabled the extension of context lengths, this progress is not without its challenges.
+Extending context length demands significant computational resources, sophisticated memory management,
+and efficient encoding methods to ensure the model remains performant and accurate.
+
+Moreover, effective memory management is critical. Models must be capable of storing and
+prioritizing vast amounts of information to maintain relevance and coherence over longer texts.
+Each model's unique encoding method also influences its ability to handle extended contexts,
+with some methods like Rotary Positional Encoding offering advantages in maintaining meaning over longer sequences.
+
+Despite these challenges, the ability to extend context length significantly enhances user experience, enabling richer,
+more coherent interactions and better handling of complex tasks. As research and technology continue to advance,
+we can expect further improvements in how LLMs manage and utilize context, paving the way for even more sophisticated
+and effective AI applications.

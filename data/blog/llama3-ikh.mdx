@@ -1,0 +1,50 @@
+---
+title: 'Integrate AI for Real Estate Agency'
+date: '2024-06-26'
+tags: ['case', 'LLM']
+draft: false
+summary: 'Fine tuning LLM to perform better on real estate property descriptions.'
+---
+
+# Task
+
+Deploy a self hosted LLM for real estate agency, that will generate descriptions for houses and apartments,
+based on property features.
+Model should generate descriptions on English, and Russian languages.
+
+# Realization
+Base model: **Llama3**
+
+Notably it performs well on descriptions on English, and not so well on Russian.
+So I decided that dataset should contain dominantly Russian descriptions,
+with some on English as well.
+
+Then I start to collect data from different sources, 
+notably [Prian](https://prian.ru/) and [Turnintolocal](https://turnintolocal.com/).
+After that I cleaned and normalized dataset, to be appropriate.
+For fine-tuning I used alpaca format, which comes in the following format:
+![Alpaca](/static/images/ikh/alpaca-format.jpg)
+
+1. **instruction** describes the task the model should perform.
+2. **input** is optional context or input for the task.
+3. **output** the answer to the instruction as should be generated.
+4. **text**: the instruction, input and output formatted with the prompt template used by the authors for fine-tuning their models.
+
+At the end my dataset looked like:
+![Dataset](/static/images/ikh/dataset.jpg)
+
+Next comes training part:
+![Training](/static/images/ikh/training.jpg)
+
+As of tools I used [unsloth](https://unsloth.ai/), they provide convenient,
+and simple jupiter notebooks, that we can use in Google Colab (in my case),
+or in any machine with at least 16 gb of vram, (with gpu like T4).
+
+# Evaluation
+
+After training I saved model in GGUF format (common file format for LLMs for deployment),
+and loaded in [ollama](/blog/local-models).
+After training model improved its performance on generating descriptions on Russian language:
+![Inference](/static/images/ikh/inference.jpg)
+Now it also uses similar description structure, as in dateset, resulting in accurate and predictive 
+outputs.

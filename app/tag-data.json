@@ -1,7 +1,8 @@
 {
   "self-host": 1,
-  "llm": 2,
+  "llm": 3,
   "vim": 1,
   "text-editor": 1,
-  "architecture": 1
+  "architecture": 1,
+  "case": 1
 }
